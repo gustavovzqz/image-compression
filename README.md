@@ -14,4 +14,4 @@ Recebo imagem de entrada e passo para matriz de cores RGB. Passo a informação 
 
 ## Tecnicalidades
 
-Como ler a imagem? Open
+Como ler a imagem? OpenCV
