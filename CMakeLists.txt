@@ -11,6 +11,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(OpenCV_DIR "/usr/lib/cmake/opencv4")
 find_package(OpenCV REQUIRED)
 
+add_subdirectory(packing)
 add_subdirectory(main)
 
 
