@@ -1,2 +1,0 @@
-- [ ] Escrever a imagem HLS em binário e recuperar diretamente a mesma imagem (sem compactação)
-- [ ] Escrever a imagem HLS em binário e compactando o H e o S.
