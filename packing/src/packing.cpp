@@ -96,7 +96,10 @@ void writeImageBinaryHSV(cv::Mat &imgBGR) {
     }
   }
 
-  file.write(reinterpret_cast<char *>(&prevPacked), sizeof(uint16_t));
+  uint16_t packedMean =
+      packHSV(h_sum / runLength, s_sum / runLength, v_sum / runLength);
+
+  file.write(reinterpret_cast<char *>(&packedMean), sizeof(uint16_t));
   file.write(reinterpret_cast<char *>(&runLength), sizeof(uint8_t));
 
   file.close();
