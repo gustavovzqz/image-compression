@@ -1,7 +1,7 @@
-#include <cstdint>
+#include "packing/include/packing.hpp"
 #include <fstream>
-#include <iostream>
 #include <opencv2/opencv.hpp>
+#include <stdexcept>
 
 uint16_t packHSV(uchar h, uchar s, uchar v) {
   uint16_t H6 = (uint16_t)(h * 63 / 179);
@@ -20,7 +20,8 @@ cv::Vec3b unpackHSV(uint16_t packed) {
   return cv::Vec3b(h, s, v);
 }
 
-bool closeEnough(uint16_t src, uint16_t dest) {
+bool closeEnough(uint16_t src, uint16_t dest, uint8_t H_MAX_DIST,
+                 uint8_t S_MAX_DIST, uint8_t V_MAX_DIST) {
 
   cv::Vec3b src_vec = unpackHSV(src);
   cv::Vec3b dest_vec = unpackHSV(dest);
@@ -29,27 +30,20 @@ bool closeEnough(uint16_t src, uint16_t dest) {
   uchar s_diff = abs(src_vec[1] - dest_vec[1]);
   uchar v_diff = abs(src_vec[2] - dest_vec[2]);
 
-  bool a = (v_diff < 20 && s_diff < 20 && h_diff < 20);
-
-  if (!a) {
-    // std::cout << "Hd:" << (int)h_diff << " ";
-    // std::cout << "Sd:" << (int)s_diff << " ";
-    // std::cout << "Vd:" << (int)v_diff << "\n";
-  }
-  return a;
+  return (v_diff < V_MAX_DIST && s_diff < S_MAX_DIST && h_diff < H_MAX_DIST);
 }
 
-void writeImageBinaryHSV(cv::Mat &imgBGR) {
+void compressBRGImage(cv::Mat &imgBGR, std::string path, uint8_t H_MAX_DIST,
+                      uint8_t S_MAX_DIST, uint8_t V_MAX_DIST) {
   cv::Mat imgHSV;
   cv::cvtColor(imgBGR, imgHSV, cv::COLOR_BGR2HSV);
 
   int width = imgHSV.cols;
   int height = imgHSV.rows;
 
-  std::ofstream file("bits.bin", std::ios::binary);
+  std::ofstream file(path, std::ios::binary);
   if (!file) {
-    std::cerr << "Erro ao abrir arquivo para escrita.\n";
-    return;
+    throw std::invalid_argument("path is invalid");
   }
 
   file.write(reinterpret_cast<char *>(&width), sizeof(int));
@@ -79,7 +73,8 @@ void writeImageBinaryHSV(cv::Mat &imgBGR) {
 
       uint16_t packed = packHSV(h, s, v);
 
-      if (closeEnough(packed, prevPacked) && runLength < 255) {
+      if (closeEnough(packed, prevPacked, H_MAX_DIST, S_MAX_DIST, V_MAX_DIST) &&
+          runLength < 255) {
         runLength++;
       } else {
         uint16_t packedMean =
@@ -105,11 +100,10 @@ void writeImageBinaryHSV(cv::Mat &imgBGR) {
   file.close();
 }
 
-void readImageBinaryHSV() {
-  std::ifstream file("bits.bin", std::ios::binary);
+cv::Mat uncompressBinary(std::string path) {
+  std::ifstream file(path, std::ios::binary);
   if (!file) {
-    std::cerr << "Erro ao abrir arquivo para leitura.\n";
-    return;
+    throw std::invalid_argument("path is invalid");
   }
 
   int width, height;
@@ -139,7 +133,5 @@ void readImageBinaryHSV() {
 
   cv::Mat imgBGR;
   cv::cvtColor(imgHSV, imgBGR, cv::COLOR_HSV2BGR);
-
-  cv::imshow("Imagem Recuperada", imgBGR);
-  cv::waitKey(0);
+  return imgBGR;
 }

@@ -2,9 +2,9 @@
 #define PACKING_INCLUDE_PACKING_HPP
 
 #include <opencv2/core.hpp>
-#include <opencv2/opencv.hpp>
 
-void readImageBinaryHSV();
-void writeImageBinaryHSV(cv::Mat &brg_img);
+cv::Mat uncompressBinary(std::string path);
+void compressBRGImage(cv::Mat &brg_img, std::string path, uint8_t MAX_DIST_H,
+                      uint8_t MAX_DIST_S, uint8_t MAX_DIST_V);
 
 #endif
