@@ -1,7 +1,6 @@
 #include "packing/include/packing.hpp"
 #include <fstream>
 #include <opencv2/opencv.hpp>
-#include <stdexcept>
 
 uint16_t packHSV(uchar h, uchar s, uchar v) {
   uint16_t H6 = (uint16_t)(h * 63 / 179);
@@ -26,7 +25,8 @@ bool closeEnough(uint16_t src, uint16_t dest, uint8_t H_MAX_DIST,
   cv::Vec3b src_vec = unpackHSV(src);
   cv::Vec3b dest_vec = unpackHSV(dest);
 
-  uchar h_diff = abs(src_vec[0] - dest_vec[0]);
+  uchar h_diff = std::min(abs(src_vec[0] - dest_vec[0]),
+                          180 - abs(src_vec[0] - dest_vec[0]));
   uchar s_diff = abs(src_vec[1] - dest_vec[1]);
   uchar v_diff = abs(src_vec[2] - dest_vec[2]);
 

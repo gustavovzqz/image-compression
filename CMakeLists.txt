@@ -12,6 +12,8 @@ set(OpenCV_DIR "/usr/lib/cmake/opencv4")
 find_package(OpenCV REQUIRED)
 
 add_subdirectory(packing)
-add_subdirectory(main)
+add_subdirectory(huffman)
+add_subdirectory(encode)
+add_subdirectory(decode)
 
 
