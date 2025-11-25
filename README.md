@@ -14,3 +14,13 @@ Desenvolver um programa compactador/descompactador de imagens. O programa deve:
 2. RLE com perdas
 3. Huffman
 
+## Como executar
+
+```bash
+mkdir build
+cd build
+cmake ..
+make
+./encode/encode <entrada> <saida> <distancia_maxima>
+./decode/decode <entrada> <saida>
+```
