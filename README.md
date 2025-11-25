@@ -10,8 +10,7 @@ Desenvolver um programa compactador/descompactador de imagens. O programa deve:
 
 ## Ideia
 
-Recebo imagem de entrada e passo para matriz de cores RGB. Passo a informação RGB para HSI. O I não possuirá perdas e eu compacto H e S usando uma representação imediata com menos bits. Após isso. Métodos básicos tanto em I como em H e S, onde H e S podem sofrer perdas (RLE aproximativo ... ).
+1. HSI 16 bits (6, 4, 6)
+2. RLE com perdas
+3. Huffman
 
-## Tecnicalidades
-
-Como ler a imagem? OpenCV
